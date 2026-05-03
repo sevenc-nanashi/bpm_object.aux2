@@ -1,0 +1,12 @@
+[package]
+name = "bpm_object-aux2"
+version = "0.1.0"
+edition = "2024"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+anyhow = "1.0.102"
+aviutl2 = "0.26.0"
+tracing = "0.1.44"

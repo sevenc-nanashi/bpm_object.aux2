@@ -1,0 +1,20 @@
+#:schema ./.aviutl2-cli/aviutl2.schema.json
+# 設定ファイルについては https://github.com/sevenc-nanashi/aviutl2-cli を参照してください。
+[project]
+id = "sevenc-nanashi.bpm_object-aux2"
+name = "bpm_object.aux2"
+version = "0.1.0"
+
+[development]
+aviutl2_version = "latest"
+
+[artifacts.bpm_object_aux2-aux2]
+destination = "Plugin/bpm_object_aux2.aux2"
+
+[artifacts.bpm_object_aux2-aux2.profiles.debug]
+build = "cargo build"
+source = "target/debug/bpm_object_aux2.dll"
+
+[artifacts.bpm_object_aux2-aux2.profiles.release]
+build = "cargo build --release"
+source = "target/release/bpm_object_aux2.dll"
