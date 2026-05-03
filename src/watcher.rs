@@ -54,6 +54,15 @@ impl WatcherThread {
                             .ok()?
                             > 0
                     {
+                        let alias: aviutl2::alias::Table =
+                            read.get_object_alias(maybe_overlap).ok()?.parse().ok()?;
+                        let disabled = alias
+                            .get_table("Object.0")?
+                            .get_value("effect.disable")
+                            .is_some_and(|v| v == "1");
+                        if disabled {
+                            return None;
+                        }
                         Some(maybe_overlap)
                     } else {
                         None
@@ -94,7 +103,7 @@ impl WatcherThread {
             || (current_grid.2 - target_grid.2).abs() > f32::EPSILON
         {
             tracing::info!(
-                "グリッドを更新: bpm={} beat={} offset={}",
+                "Updating grid: bpm={} beat={} offset={}",
                 target_grid.0,
                 target_grid.1,
                 target_grid.2

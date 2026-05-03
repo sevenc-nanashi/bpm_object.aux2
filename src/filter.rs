@@ -1,4 +1,4 @@
-use aviutl2::{anyhow::Context, filter::FilterConfigItems, tracing};
+use aviutl2::filter::FilterConfigItems;
 
 pub const OBJECT_NAME: &str = "BPMオブジェクト";
 
@@ -8,38 +8,9 @@ pub struct BpmObject;
 #[aviutl2::filter::filter_config_items]
 struct BpmObjectAuf2Config {
     #[track(name = "BPM", default = 120.0, range=0.0..=640.0, step = 0.1)]
-    bpm: f64,
+    _tempo: f64,
     #[track(name = "拍子", default = 4, range=1..=16, step = 1)]
-    beat: u32,
-    #[button(name = "設定")]
-    set_bpm: fn(),
-}
-
-fn set_bpm(edit: &mut aviutl2::generic::EditSection) -> aviutl2::AnyResult<()> {
-    let object = edit.object(
-        edit.get_focused_object()?
-            .context("オブジェクトが選択されていません")?,
-    );
-    let bpm: f64 = object
-        .get_effect_item(OBJECT_NAME, 0, "BPM")?
-        .parse()?;
-    let beat: u32 = object
-        .get_effect_item(OBJECT_NAME, 0, "拍子")?
-        .parse()?;
-
-    let starting_frame = object.get_layer_frame()?.start;
-    let offset =
-        starting_frame as f64 * *edit.info.fps.denom() as f64 / *edit.info.fps.numer() as f64;
-    tracing::info!(
-        "BPMオブジェクトを設定: bpm={}, beat={}, offset={}",
-        bpm,
-        beat,
-        offset
-    );
-
-    edit.set_grid_bpm(bpm as _, beat as _, offset as _)?;
-
-    Ok(())
+    _beat: u32,
 }
 
 impl aviutl2::filter::FilterPlugin for BpmObject {

@@ -7,6 +7,7 @@ version = "0.1.0"
 
 [development]
 aviutl2_version = "latest"
+catalog_dependencies = ["KuroNeko.CopyAlias"]
 
 [artifacts.bpm_object_aux2-aux2]
 destination = "Plugin/bpm_object_aux2.aux2"
