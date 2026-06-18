@@ -33,7 +33,10 @@ impl aviutl2::generic::GenericPlugin for BpmObjectAux2 {
     fn plugin_info(&self) -> aviutl2::generic::GenericPluginTable {
         aviutl2::generic::GenericPluginTable {
             name: "bpm_object.aux2".to_string(),
-            information: "".to_string(),
+            information: format!(
+                "Custom Objects as a BPM grid / v{} / https://github.com/sevenc-nanashi/bpm_object.aux2",
+                env!("CARGO_PKG_VERSION")
+            ),
         }
     }
 
