@@ -7,10 +7,12 @@ pub struct BpmObject;
 
 #[aviutl2::filter::filter_config_items]
 struct BpmObjectAuf2Config {
-    #[track(name = "BPM", default = 120.0, range=0.0..=640.0, step = 0.1)]
+    #[track(name = "BPM", default = 120.0, range=0.0..=640.0, step = 0.001)]
     _tempo: f64,
     #[track(name = "拍子", default = 4, range=1..=16, step = 1)]
     _beat: u32,
+    #[track(name = "オフセット", default = 0.0, range=-10.0..=10.0, step = 0.001)]
+    _offset: f64,
 }
 
 impl aviutl2::filter::FilterPlugin for BpmObject {

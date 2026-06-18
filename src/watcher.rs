@@ -149,9 +149,13 @@ impl WatcherState {
                 let beat: usize = overlap
                     .get_effect_item(crate::filter::OBJECT_NAME, 0, "拍子")?
                     .parse()?;
+                let offset: f32 = overlap
+                    .get_effect_item(crate::filter::OBJECT_NAME, 0, "オフセット")?
+                    .parse()?;
                 let starting_frame = overlap.get_layer_frame()?.start;
-                let offset =
-                    starting_frame as f32 * *info.fps.denom() as f32 / *info.fps.numer() as f32;
+                let offset = starting_frame as f32 * *info.fps.denom() as f32
+                    / *info.fps.numer() as f32
+                    + offset;
                 Ok(Some(BpmGrid { bpm, beat, offset }))
             })
             .map_err(anyhow::Error::from)
