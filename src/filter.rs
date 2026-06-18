@@ -26,7 +26,7 @@ impl aviutl2::filter::FilterPlugin for BpmObject {
             flags: aviutl2::bitflag!(aviutl2::filter::FilterPluginFlags {
                 video: false,
                 audio: true,
-                as_object: true,
+                input: true,
             }),
             config_items: BpmObjectAuf2Config::to_config_items(),
         }

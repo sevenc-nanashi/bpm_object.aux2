@@ -8,7 +8,7 @@ crate-type = ["cdylib"]
 
 [dependencies]
 anyhow = "1.0.102"
-aviutl2 = "0.26.0"
+aviutl2 = { version = "0.33.0", features = ["serde"] }
 midly = { version = "0.5.3", default-features = false, features = ["std"] }
-native-dialog = "0.9.6"
+native-dialog = "0.9.7"
 tracing = "0.1.44"

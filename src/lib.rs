@@ -8,7 +8,8 @@ pub static EDIT_HANDLE: aviutl2::generic::GlobalEditHandle =
 #[aviutl2::plugin(GenericPlugin)]
 struct BpmObjectAux2 {
     object: aviutl2::generic::SubPlugin<crate::filter::BpmObject>,
-    _watcher_thread: crate::watcher::WatcherThread,
+    watcher_thread: crate::watcher::WatcherThread,
+    multiplier: i32,
 }
 
 impl aviutl2::generic::GenericPlugin for BpmObjectAux2 {
@@ -24,7 +25,8 @@ impl aviutl2::generic::GenericPlugin for BpmObjectAux2 {
             .init();
         Ok(Self {
             object: aviutl2::generic::SubPlugin::new_filter_plugin(&info)?,
-            _watcher_thread: crate::watcher::WatcherThread::start(),
+            watcher_thread: crate::watcher::WatcherThread::start(),
+            multiplier: 0,
         })
     }
 
@@ -39,6 +41,20 @@ impl aviutl2::generic::GenericPlugin for BpmObjectAux2 {
         registry.register_filter_plugin(&self.object);
         registry.register_menus::<Self>();
         EDIT_HANDLE.init(registry.create_edit_handle());
+    }
+
+    fn on_project_load(&mut self, project: &mut aviutl2::generic::ProjectFile) {
+        let multiplier = project.deserialize::<i32>("multiplier").unwrap_or(0);
+        self.watcher_thread.set_grid_multiplier(multiplier);
+    }
+
+    fn on_project_save(&mut self, project: &mut aviutl2::generic::ProjectFile) {
+        project.clear_params();
+        let _ = project.serialize("multiplier", &self.multiplier);
+    }
+
+    fn event_change_edit_frame(&mut self) {
+        self.watcher_thread.notify_frame_moved();
     }
 }
 
@@ -104,6 +120,27 @@ impl BpmObjectAux2 {
             anyhow::Ok(())
         })??;
 
+        Ok(())
+    }
+
+    #[edit(name = "bpm_object.aux2\\BPMグリッドの倍率を上げる")]
+    fn increase_grid_multiplier(&mut self) -> aviutl2::common::AnyResult<()> {
+        self.multiplier += 1;
+        self.watcher_thread.set_grid_multiplier(self.multiplier);
+        Ok(())
+    }
+
+    #[edit(name = "bpm_object.aux2\\BPMグリッドの倍率を下げる")]
+    fn decrease_grid_multiplier(&mut self) -> aviutl2::common::AnyResult<()> {
+        self.multiplier -= 1;
+        self.watcher_thread.set_grid_multiplier(self.multiplier);
+        Ok(())
+    }
+
+    #[edit(name = "bpm_object.aux2\\BPMグリッドの倍率をリセット")]
+    fn reset_grid_multiplier(&mut self) -> aviutl2::common::AnyResult<()> {
+        self.multiplier = 0;
+        self.watcher_thread.set_grid_multiplier(self.multiplier);
         Ok(())
     }
 }
