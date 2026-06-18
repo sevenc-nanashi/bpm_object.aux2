@@ -56,6 +56,14 @@ impl aviutl2::generic::GenericPlugin for BpmObjectAux2 {
     fn event_change_edit_frame(&mut self) {
         self.watcher_thread.notify_frame_moved();
     }
+
+    fn event_update_object_info(&mut self) {
+        self.watcher_thread.notify_object_updated();
+    }
+
+    fn event_change_scene_info(&mut self) {
+        self.watcher_thread.notify_scene_changed();
+    }
 }
 
 #[aviutl2::generic::menus]

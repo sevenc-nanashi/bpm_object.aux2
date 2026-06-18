@@ -1,5 +1,7 @@
 enum WatcherMessage {
     FrameMoved,
+    ObjectUpdated,
+    SceneChanged,
     SetGridMultiplier(i32),
     Stop,
 }
@@ -25,7 +27,11 @@ impl WatcherThread {
                 }
 
                 match receiver.recv() {
-                    Ok(WatcherMessage::FrameMoved) => {
+                    Ok(
+                        WatcherMessage::FrameMoved
+                        | WatcherMessage::ObjectUpdated
+                        | WatcherMessage::SceneChanged,
+                    ) => {
                         state.update_if_changed();
                     }
                     Ok(WatcherMessage::SetGridMultiplier(multiplier)) => {
@@ -48,6 +54,14 @@ impl WatcherThread {
 
     pub fn notify_frame_moved(&self) {
         let _ = self.sender.send(WatcherMessage::FrameMoved);
+    }
+
+    pub fn notify_object_updated(&self) {
+        let _ = self.sender.send(WatcherMessage::ObjectUpdated);
+    }
+
+    pub fn notify_scene_changed(&self) {
+        let _ = self.sender.send(WatcherMessage::SceneChanged);
     }
 
     pub fn set_grid_multiplier(&self, multiplier: i32) {
