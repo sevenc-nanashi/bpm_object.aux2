@@ -152,10 +152,23 @@ impl WatcherState {
                 let offset: f32 = overlap
                     .get_effect_item(crate::filter::OBJECT_NAME, 0, "オフセット")?
                     .parse()?;
+                let offset_unit = match overlap
+                    .get_effect_item(crate::filter::OBJECT_NAME, 0, "オフセットの単位")?
+                    .as_str()
+                {
+                    "秒" => crate::filter::OffsetUnit::Seconds,
+                    "拍" => crate::filter::OffsetUnit::Beats,
+                    other => {
+                        anyhow::bail!("Unknown offset unit: {other}");
+                    }
+                };
                 let starting_frame = overlap.get_layer_frame()?.start;
                 let offset = starting_frame as f32 * *info.fps.denom() as f32
                     / *info.fps.numer() as f32
-                    + offset;
+                    + match offset_unit {
+                        crate::filter::OffsetUnit::Seconds => offset,
+                        crate::filter::OffsetUnit::Beats => offset * 60.0 / bpm,
+                    };
                 Ok(Some(BpmGrid { bpm, beat, offset }))
             })
             .map_err(anyhow::Error::from)

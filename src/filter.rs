@@ -1,9 +1,17 @@
 use aviutl2::filter::FilterConfigItems;
 
-pub const OBJECT_NAME: &str = "BPMオブジェクト";
+pub const OBJECT_NAME: &str = "bpm_object.aux2";
 
 #[aviutl2::plugin(FilterPlugin)]
 pub struct BpmObject;
+
+#[derive(aviutl2::filter::FilterConfigSelectItems, Clone, Copy)]
+pub enum OffsetUnit {
+    #[item(name = "秒")]
+    Seconds,
+    #[item(name = "拍")]
+    Beats,
+}
 
 #[aviutl2::filter::filter_config_items]
 struct BpmObjectAuf2Config {
@@ -13,6 +21,8 @@ struct BpmObjectAuf2Config {
     _beat: u32,
     #[track(name = "オフセット", default = 0.0, range=-10.0..=10.0, step = 0.001)]
     _offset: f64,
+    #[select(name = "オフセットの単位", items = OffsetUnit, default = OffsetUnit::Seconds)]
+    _offset_unit: OffsetUnit,
 }
 
 impl aviutl2::filter::FilterPlugin for BpmObject {
@@ -24,7 +34,7 @@ impl aviutl2::filter::FilterPlugin for BpmObject {
         aviutl2::filter::FilterPluginTable {
             name: OBJECT_NAME.to_string(),
             label: None,
-            information: "BPMオブジェクト".to_string(),
+            information: "bpm_object.aux2 / BPM Grid Object".to_string(),
             flags: aviutl2::bitflag!(aviutl2::filter::FilterPluginFlags {
                 video: false,
                 audio: true,
